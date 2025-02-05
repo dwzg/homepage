@@ -6,6 +6,7 @@ env:
   DOCKER_USER: ${{secrets.DOCKER_USER}}
   DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
   REPO_NAME: ${{secrets.REPO_NAME}}
+  PORTAINER_WEBHOOK_URL: ${{secrets.PORTAINER_WEBHOOK_URL}}
 jobs:
   push-image-to-docker-hub:
     runs-on: ubuntu-latest
@@ -17,3 +18,5 @@ jobs:
       run: docker build . --file Dockerfile --tag $DOCKER_USER/$REPO_NAME
     - name: Push the Docker image
       run: docker push $DOCKER_USER/$REPO_NAME
+    - name: Trigger Portainer webhook to update page
+      run: curl -X POST $PORTAINER_WEBHOOK_URL
