@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Login to Docker Hub
-      run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag $DOCKER_USER/$REPO_NAME
+      run: docker buildx build --file Dockerfile --tag $DOCKER_USER/$REPO_NAME .
+    - name: Login to Docker Hub
+      run: docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
     - name: Push the Docker image
       run: docker push $DOCKER_USER/$REPO_NAME
     - name: Trigger Portainer webhook to update page
-      run: curl -X POST $PORTAINER_WEBHOOK_URL
+      run: curl --request POST $PORTAINER_WEBHOOK_URL
