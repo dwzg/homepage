@@ -3,7 +3,6 @@ title: A local model I never have to believe
 summary: I gave a 27B model on my graphics card real work in a reverse-engineering project. It only became useful once every answer went through a checker, and most of what went wrong was in the tools around it.
 date: 2026-10-11
 project: agent-config
-draft: true
 ---
 
 The first test for the local model was to describe ten functions whose behaviour was already known. Eight descriptions were right. The other two called a signed comparison unsigned. In C that is a bug that only shows for values with the top bit set, and nothing in the text gave it away.
