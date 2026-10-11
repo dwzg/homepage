@@ -2,7 +2,6 @@
 import { render } from 'astro:content';
 
 import Base from '../../layouts/Base.astro';
-import { AUTHOR } from '../../consts';
 import { getProject } from '../../data/projects';
 import { getPosts, isoDate, readingMinutes, type Post } from '../../lib/posts';
 
@@ -55,12 +54,9 @@ const toc = headings.filter((h) => h.depth === 2);
       </div>
       {
         post.data.assisted && (
-          <div class="field note">
-            <span class="label">Written with Claude</span>
-            <span>
-              Drafted by Claude from the project's commit history and notes, then reviewed by{' '}
-              {AUTHOR}.
-            </span>
+          <div class="field">
+            <span class="label">Written with</span>
+            <a href="/about/">Claude</a>
           </div>
         )
       }
@@ -126,14 +122,6 @@ const toc = headings.filter((h) => h.depth === 2);
   }
 
   .repo {
-    color: var(--muted);
-  }
-
-  .note {
-    gap: 6px;
-    padding: 12px;
-    background: var(--surface);
-    border-radius: 6px;
     color: var(--muted);
   }
 
@@ -205,10 +193,6 @@ const toc = headings.filter((h) => h.depth === 2);
       gap: 14px 28px;
       padding-bottom: 20px;
       border-bottom: 1px solid var(--line);
-    }
-
-    .note {
-      flex: 1 1 100%;
     }
 
     .toc {

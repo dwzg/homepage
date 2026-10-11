@@ -30,7 +30,7 @@ Most posts are drafted by Claude from a project's repository and reviewed by Den
 - Write in the first person, as Dennis. Plain, direct sentences. Explain the *why* and what was learned, not a changelog.
 - `summary` is one or two sentences; it is the front page and the RSS description.
 - Use `## ` headings (they build the "On this page" list); tables for measured comparisons, with numeric columns right-aligned (`---:`), which renders them in Fira Code and keeps them from wrapping.
-- `assisted` defaults to true and prints "Written with Claude … reviewed by Dennis". Leave it on for drafted posts.
+- `assisted` defaults to true and adds "Written with Claude" to the post's details, linking to the About page, which explains how posts are made. Leave it on for drafted posts. Keep the disclosure that small: one line per post and the About paragraph, nothing more prominent.
 - Don't set `draft: true` on a drafted post. Open it as a pull request: merging the pull request is Dennis's review and publishes the post, edited or not. Never merge it yourself. `draft: true` stays available for posts Dennis wants to keep unpublished on `main`.
 - Never put the weather station's location, coordinates or anything derived from them into a post. The weatherpage repository keeps them secret on purpose.
 
