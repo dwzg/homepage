@@ -40,6 +40,10 @@ I decided that such a function may replace the mechanical translation only if no
 
 The rest stay out of the build. They are kept in the repository as reading material, with a header that says nobody has checked them. Before that they sat in an untracked build directory for hours, and they were hours of work for the card.
 
+Later a review agent read 32 of the accepted functions against the original listings. In 26 it found no difference. Four loaded or stored a memory location a different number of times than the original, which the tests did not compare. They do now.
+
+One function could not be right at all. The original copies a 12-character file name and its terminating zero into a 12-byte buffer on the stack. The thirteenth byte clears the low byte of a register saved for the caller. No test had seen it, and the mechanical translation of that function had been in the build without it. A scan for the same shape found three more functions.
+
 The reaching task shows the limit from the other side. For four of eight functions the model reasoned until it ran out of tokens and wrote no answer. One input it proposed was wrong, and the emulator said so. The two claims it made were both right, and each named the addresses that proved it, so reading them took a minute.
 
 ## Most failures were in the tools
@@ -69,5 +73,7 @@ Put into the input what a tool already knows. Every fact the model had to infer 
 Test the checker by hand with a right answer, a wrong one and a malformed one. Read the rejected answers before blaming the model.
 
 Decide beforehand what a passing answer must meet to be used, and count it separately from reviewed work. Otherwise the progress numbers start to mean less than they say.
+
+Then have someone read a sample anyway. The checker defines what right means, and reading is how we found out what it had left out.
 
 The loop, the wrapper for the cores and the rules are in my [agent-config](https://github.com/dwzg/agent-config) repository as the plugin `local-model-tandem`.
