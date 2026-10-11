@@ -1,0 +1,37 @@
+---
+import type { ProjectStatus } from '../data/projects';
+
+interface Props {
+  status: ProjectStatus;
+}
+
+const { status } = Astro.props;
+---
+
+<span class="status" data-status={status}><span class="dot" aria-hidden="true"></span>{status}</span>
+
+<style>
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--subtle);
+    white-space: nowrap;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--idle);
+  }
+
+  [data-status='running'] .dot {
+    background: var(--ok);
+  }
+
+  [data-status='building'] .dot {
+    background: var(--warn);
+  }
+</style>

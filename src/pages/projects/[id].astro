@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import ProjectStatus from '../../components/ProjectStatus.astro';
+import { PROJECTS, type Project } from '../../data/projects';
+import { getPosts } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return PROJECTS.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const posts = (await getPosts()).filter((p) => p.data.project === project.id);
+---
+
+<Base title={project.name} description={project.description} section="projects">
+  <div class="project">
+    <header>
+      <div class="top">
+        <h1 class="mono">{project.name}</h1>
+        <ProjectStatus status={project.status} />
+      </div>
+      <p>{project.description}</p>
+      {project.repo && <a class="mono repo" href={project.repo}>{project.repo.replace('https://', '')}</a>}
+    </header>
+    <PostList posts={posts} showProject={false} />
+  </div>
+</Base>
+
+<style>
+  .project {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 62ch;
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .repo {
+    color: var(--accent);
+  }
+</style>

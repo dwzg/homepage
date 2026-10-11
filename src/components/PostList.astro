@@ -1,0 +1,146 @@
+---
+import { getProject } from '../data/projects';
+import { isoDate, type Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+  /** Hide the project column, e.g. on a project's own page. */
+  showProject?: boolean;
+}
+
+const { posts, showProject = true } = Astro.props;
+---
+
+<div class="log">
+  <div class="log-head label" aria-hidden="true">
+    <span class="c-date">Date</span>
+    {showProject && <span class="c-project">Project</span>}
+    <span class="c-post">Post</span>
+  </div>
+  <ol>
+    {
+      posts.map((post) => (
+        <li>
+          <a href={`/posts/${post.id}/`} class="row">
+            <time class="c-date mono" datetime={post.data.date.toISOString()}>
+              {isoDate(post.data.date)}
+            </time>
+            {showProject && <span class="c-project mono">{getProject(post.data.project).name}</span>}
+            <span class="c-post">
+              <span class="title">
+                {post.data.title}
+                {post.data.draft && <span class="draft">draft</span>}
+              </span>
+              <span class="summary">{post.data.summary}</span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+  {posts.length === 0 && <p class="empty">Nothing here yet.</p>}
+</div>
+
+<style>
+  .log-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--fg);
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .c-date {
+    flex: 0 0 96px;
+  }
+
+  .c-project {
+    flex: 0 0 112px;
+  }
+
+  .c-post {
+    flex: 1 1 300px;
+    min-width: 0;
+  }
+
+  .row .c-date,
+  .row .c-project {
+    padding-top: 3px;
+    font-size: 13px;
+    color: var(--subtle);
+  }
+
+  .row .c-project {
+    color: var(--accent);
+  }
+
+  .row .c-post {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--fg);
+    text-wrap: balance;
+  }
+
+  .row:hover .title {
+    color: var(--accent);
+  }
+
+  .summary {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .draft {
+    margin-left: 8px;
+    padding: 1px 6px;
+    border: 1px solid var(--warn);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--warn);
+    vertical-align: 2px;
+  }
+
+  .empty {
+    color: var(--muted);
+  }
+
+  /* On a phone the date and project sit on one line above the title. */
+  @media (max-width: 560px) {
+    .log-head {
+      display: none;
+    }
+
+    .row {
+      gap: 4px 16px;
+    }
+
+    .c-date,
+    .c-project {
+      flex: 0 0 auto;
+    }
+  }
+</style>
