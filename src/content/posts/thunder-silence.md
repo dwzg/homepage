@@ -3,7 +3,6 @@ title: My thunder labels mistook silence for calm
 summary: A thunder model ranked hours well and still scored worse than guessing. Most of its training stations had stopped listening for thunder years before the data ended.
 date: 2026-10-11
 project: weatherpage
-draft: true
 ---
 
 The second full training run gave my thunderstorm model a held-out year in which thunder followed only 0.7% of hours. A run before had put it at 3.0%. The model ranked hours well, at an AUC of 0.87, and still scored a Brier skill of −0.15. It was worse than quoting the base rate.
@@ -16,10 +15,12 @@ My weather page shows a short outlook, and one of its lines is "Thunderstorm pos
 
 Eleven codes mean thunder:
 
-- 17: thunder heard, but no rain
-- 29: thunder in the last hour
-- 91 to 94: thunder in the last hour, with rain or snow now
-- 95 to 99: a thunderstorm at the time of the observation
+| Code | Meaning |
+| :---: | --- |
+| 17 | thunder heard, but no rain |
+| 29 | thunder in the last hour |
+| 91 - 94 | thunder in the last hour, with rain or snow now |
+| 95 - 99 | a thunderstorm at the time of the observation |
 
 An observer on duty who saw nothing significant wrote −1, "nothing reported". Thunder is always significant. So while someone was on duty, −1 is a real observation, and it means there was no thunder that hour.
 
