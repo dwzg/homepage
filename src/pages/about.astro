@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { GITHUB_USER, QUOTE } from '../consts';
+import { GITHUB_USER } from '../consts';
 ---
 
 <Base title="About" section="about">
@@ -21,7 +21,6 @@ import { GITHUB_USER, QUOTE } from '../consts';
         including <a href={`https://github.com/${GITHUB_USER}/homepage`}>this site</a>.
         New posts are also in the <a href="/rss.xml">RSS feed</a>.
       </p>
-      <blockquote><p>{QUOTE}</p></blockquote>
     </div>
   </div>
 </Base>
