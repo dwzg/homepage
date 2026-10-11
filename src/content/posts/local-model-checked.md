@@ -74,6 +74,6 @@ Test the checker by hand with a right answer, a wrong one and a malformed one. R
 
 Decide beforehand what a passing answer must meet to be used, and count it separately from reviewed work. Otherwise the progress numbers start to mean less than they say.
 
-Then have someone read a sample anyway. The checker defines what right means, and reading is how I found out what it had left out.
+Then have someone read a sample anyway. The checker defines what right means, and reading is how we found out what it had left out.
 
 The loop, the wrapper for the cores and the rules are in my [agent-config](https://github.com/dwzg/agent-config) repository as the plugin `local-model-tandem`.
