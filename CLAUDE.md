@@ -37,6 +37,8 @@ Most posts are drafted by Claude from a project's repository and reviewed by Den
 
 "Lab Log": IBM Plex Sans for text, Fira Code for metadata and code, one teal accent, white / near-black ground. Colours are tokens in `global.css`; style components through them, never with literal colours. Fonts are self-hosted through `@fontsource` (nothing is loaded from third-party servers). Fira Code's ligatures are switched off on the page so a reader sees `>=`, not `≥`.
 
+**Never start a source line with an inline tag inside running text.** Astro drops the line break and indentation in front of it, so `including\n<a …>this site</a>` renders as "includingthis site". Break the line before the word, not before the tag.
+
 Check UI changes in a browser at desktop and phone widths, in both colour schemes; the page must never scroll horizontally (tables and code scroll in their own box).
 
 ## Deployment
