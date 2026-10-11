@@ -1,0 +1,114 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import ProjectStatus from '../components/ProjectStatus.astro';
+import { PROJECTS } from '../data/projects';
+import { getPosts } from '../lib/posts';
+
+const posts = await getPosts();
+---
+
+<Base section="posts">
+  <div class="home">
+    <section class="intro">
+      <div class="lede">
+        <h1>Experiments, measurements and the occasional mistake.</h1>
+        <p>
+          I build small systems at home and keep notes on what worked and what didn't. Most posts are
+          drafted with Claude from each project's own repository, then checked and edited by me.
+        </p>
+      </div>
+      <div class="projects">
+        <div class="label">Projects</div>
+        <ul>
+          {
+            PROJECTS.map((p) => (
+              <li>
+                <a href={`/projects/${p.id}/`}>
+                  <span class="mono">{p.name}</span>
+                  <ProjectStatus status={p.status} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="posts-heading">
+      <h2 id="posts-heading" class="visually-hidden">Posts</h2>
+      <PostList posts={posts} />
+    </section>
+  </div>
+</Base>
+
+<style>
+  .home {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  .intro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px 64px;
+    align-items: flex-start;
+  }
+
+  .lede {
+    flex: 999 1 460px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 22ch;
+    font-size: clamp(28px, 4vw, 34px);
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .lede p {
+    margin: 0;
+    max-width: 58ch;
+    color: var(--muted);
+  }
+
+  .projects {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .projects ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+
+  .projects li + li {
+    border-top: 1px solid var(--line);
+  }
+
+  .projects a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .projects .mono {
+    font-size: 14px;
+  }
+</style>

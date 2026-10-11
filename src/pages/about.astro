@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import { GITHUB_USER, QUOTE } from '../consts';
+---
+
+<Base title="About" section="about">
+  <div class="about">
+    <h1>About</h1>
+    <div class="prose">
+      <p>
+        I'm Dennis. I build small systems at home — a weather station on my balcony, the server it runs on,
+        and whatever experiment comes next — and this is where I write down what they taught me.
+      </p>
+      <p>
+        Most posts are drafted with <a href="https://claude.ai">Claude</a> from the project's own repository:
+        its commit history, design notes and measurements. I check and edit every one before it goes up, and
+        each post says so. The numbers come from the projects, not from the writing.
+      </p>
+      <p>
+        The code for everything here is on <a href={`https://github.com/${GITHUB_USER}`}>GitHub</a>, including
+        <a href={`https://github.com/${GITHUB_USER}/homepage`}>this site</a>. New posts are also in the
+        <a href="/rss.xml">RSS feed</a>.
+      </p>
+      <blockquote><p>{QUOTE}</p></blockquote>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .about {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: var(--prose);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+</style>

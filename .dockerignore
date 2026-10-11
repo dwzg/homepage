@@ -1,6 +1,7 @@
 .git
-.gitignore
-.gitattributes
 .github
+node_modules
+dist
+.astro
 Dockerfile
 .dockerignore

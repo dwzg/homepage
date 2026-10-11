@@ -1,0 +1,95 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectStatus from '../../components/ProjectStatus.astro';
+import { PROJECTS } from '../../data/projects';
+import { getPosts } from '../../lib/posts';
+
+const posts = await getPosts();
+const count = (id: string) => posts.filter((p) => p.data.project === id).length;
+---
+
+<Base title="Projects" section="projects">
+  <div class="projects">
+    <h1>Projects</h1>
+    <ul>
+      {
+        PROJECTS.map((p) => (
+          <li>
+            <div class="top">
+              <a class="mono name" href={`/projects/${p.id}/`}>
+                {p.name}
+              </a>
+              <ProjectStatus status={p.status} />
+            </div>
+            <p>{p.description}</p>
+            <div class="links mono">
+              <a href={`/projects/${p.id}/`}>
+                {count(p.id)} {count(p.id) === 1 ? 'post' : 'posts'}
+              </a>
+              {p.repo && <a href={p.repo}>source</a>}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>
+
+<style>
+  .projects {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 20px;
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .name {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0;
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .links {
+    display: flex;
+    gap: 20px;
+    color: var(--accent);
+  }
+</style>
