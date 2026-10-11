@@ -21,6 +21,14 @@ export const PROJECTS = [
     status: 'running',
   },
   {
+    id: 'agent-config',
+    name: 'agent-config',
+    description:
+      'Skills, agents and plugins for AI coding, taken from my own projects. Each one exists because something went wrong without it.',
+    repo: 'https://github.com/dwzg/agent-config',
+    status: 'running',
+  },
+  {
     id: 'homepage',
     name: 'homepage',
     description: 'This site. Markdown posts, built with Astro, served as static files from a container.',
