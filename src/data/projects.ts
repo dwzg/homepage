@@ -7,6 +7,9 @@ export interface Project {
   id: string;
   name: string;
   description: string;
+  // The public repository. A project that is not public has `repo: undefined` (the key
+  // stays, so that every entry has the same shape); the pages then say "not public"
+  // where the link to the source would be.
   repo?: string;
   status: ProjectStatus;
 }
@@ -32,8 +35,8 @@ export const PROJECTS = [
     id: 'camera-firmware',
     name: 'camera firmware',
     description:
-      "An old digital compact camera's firmware, rebuilt in C function by function and checked against the original in an emulator. The repository is private, because it contains the manufacturer's update file.",
-    // No public repository; the key stays so that every entry has the same shape.
+      "An old digital compact camera's firmware, rebuilt in C function by function and checked against the original in an emulator.",
+    // Not public: see `repo` in the interface above.
     repo: undefined,
     status: 'building',
   },

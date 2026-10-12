@@ -25,7 +25,13 @@ const posts = (await getPosts()).filter((p) => p.data.project === project.id);
         <ProjectStatus status={project.status} />
       </div>
       <p>{project.description}</p>
-      {project.repo && <a class="mono repo" href={project.repo}>{project.repo.replace('https://', '')}</a>}
+      {
+        project.repo ? (
+          <a class="mono repo" href={project.repo}>{project.repo.replace('https://', '')}</a>
+        ) : (
+          <span class="mono private">not public</span>
+        )
+      }
     </header>
     <PostList posts={posts} showProject={false} />
   </div>
@@ -65,5 +71,10 @@ const posts = (await getPosts()).filter((p) => p.data.project === project.id);
 
   .repo {
     color: var(--accent);
+  }
+
+  /* Not a link, so not in the link colour. */
+  .private {
+    color: var(--muted);
   }
 </style>
