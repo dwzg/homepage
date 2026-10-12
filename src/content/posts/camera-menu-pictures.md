@@ -1,5 +1,5 @@
 ---
-title: NANDDAT.BIN holds the camera's scene-menu pictures
+title: Where an old digital camera's firmware keeps its menu pictures
 summary: An old camera's firmware can load a file called NANDDAT.BIN that the manufacturer's update package does not contain. It is an image of reserved sectors in the internal memory, where the camera keeps the pictures of its scene menus. Two functions of 40 and 192 bytes showed it.
 date: 2026-10-12
 project: camera-firmware
@@ -15,7 +15,7 @@ The project rebuilds the firmware in C, function by function. Claude does most o
 
 The function that loads the file was known. It is 292 bytes long and builds the file name on the stack one character at a time, so the name is not among the firmware's strings. The dialog behind the hidden item was known too. Its description said that on "Yes" the camera writes the file by formatting the internal memory. The format routine had not been read, so the question looked like it needed that.
 
-## The pictures are stored in reserved sectors
+## Pictures in reserved sectors
 
 This evening Claude worked through the functions with the most callers that still had no name. One of them, with 45 call sites, takes a short text like "15" and two screen coordinates. Following it down led to a reader for raw sectors of the camera's internal memory. It accepts sector numbers from 0x10 to 0x828 and nothing else, and it does not go through the file system.
 
