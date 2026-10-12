@@ -7,6 +7,9 @@ export interface Project {
   id: string;
   name: string;
   description: string;
+  // The public repository. A project that is not public has `repo: undefined` (the key
+  // stays, so that every entry has the same shape); the pages then say "not public"
+  // where the link to the source would be.
   repo?: string;
   status: ProjectStatus;
 }
@@ -27,6 +30,15 @@ export const PROJECTS = [
       'Skills, agents and plugins for AI coding, taken from my own projects. Each one exists because something went wrong without it.',
     repo: 'https://github.com/dwzg/agent-config',
     status: 'running',
+  },
+  {
+    id: 'camera-firmware',
+    name: 'camera firmware',
+    description:
+      "An old digital compact camera's firmware, rebuilt in C function by function and checked against the original in an emulator.",
+    // Not public: see `repo` in the interface above.
+    repo: undefined,
+    status: 'building',
   },
   {
     id: 'homepage',

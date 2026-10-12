@@ -46,7 +46,13 @@ const toc = headings.filter((h) => h.depth === 2);
       <div class="field">
         <span class="label">Project</span>
         <a class="mono accent" href={`/projects/${project.id}/`}>{project.name}</a>
-        {project.repo && <a class="repo" href={project.repo}>Source on GitHub</a>}
+        {
+          project.repo ? (
+            <a class="repo" href={project.repo}>Source on GitHub</a>
+          ) : (
+            <span class="repo">Source not public</span>
+          )
+        }
       </div>
       <div class="field">
         <span class="label">Reading time</span>

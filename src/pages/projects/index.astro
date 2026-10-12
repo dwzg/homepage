@@ -26,7 +26,7 @@ const count = (id: string) => posts.filter((p) => p.data.project === id).length;
               <a href={`/projects/${p.id}/`}>
                 {count(p.id)} {count(p.id) === 1 ? 'post' : 'posts'}
               </a>
-              {p.repo && <a href={p.repo}>source</a>}
+              {p.repo ? <a href={p.repo}>source</a> : <span class="private">not public</span>}
             </div>
           </li>
         ))
@@ -91,5 +91,10 @@ const count = (id: string) => posts.filter((p) => p.data.project === id).length;
     display: flex;
     gap: 20px;
     color: var(--accent);
+  }
+
+  /* Not a link, so not in the link colour. */
+  .private {
+    color: var(--muted);
   }
 </style>
