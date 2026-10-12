@@ -7,7 +7,7 @@ project: camera-firmware
 
 The firmware of the camera I am taking apart has a hidden item in its set-up menu. It reads a file named `NANDDAT.BIN` from the memory card and asks whether to install it. The update package from the manufacturer has no such file. A web search for the name found nothing.
 
-On 10 October the project's notes got the line "What the file holds is not known; the name suggests an image of a NAND memory." It stayed that way for two days.
+On the 10th of October the project's notes got the line "What the file holds is not known; the name suggests an image of a NAND memory." It stayed that way for two days.
 
 ## What existed
 
@@ -53,7 +53,7 @@ The dialog's old description was wrong in one detail, and the detail mattered. T
 
 ## What I would tell someone starting the same thing
 
-Write the next step next to an open question, and not only the question. The note from 10 October already had the address of the buffer the file is loaded into. A search for other uses of that address finds the 40-byte function at once. Nobody ran it, because the note recorded what was unknown and stopped there.
+Write the next step next to an open question, and not only the question. The note from the 10th of October already had the address of the buffer the file is loaded into. A search for other uses of that address finds the 40-byte function at once. Nobody ran it, because the note recorded what was unknown and stopped there.
 
 Check the sentence around an "unknown" as carefully as the unknown itself. The note said which routine wrote the file, stated it as a fact, and was wrong. A description that is nearly right sends the next reader to the wrong function.
 
