@@ -32,7 +32,7 @@ export const PROJECTS = [
     id: 'camera-firmware',
     name: 'camera firmware',
     description:
-      "An old compact camera's firmware, rebuilt in C function by function and checked against the original in an emulator. The repository is private, because it contains the manufacturer's update file.",
+      "An old digital compact camera's firmware, rebuilt in C function by function and checked against the original in an emulator. The repository is private, because it contains the manufacturer's update file.",
     // No public repository; the key stays so that every entry has the same shape.
     repo: undefined,
     status: 'building',

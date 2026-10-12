@@ -1,6 +1,6 @@
 ---
 title: Where an old digital camera's firmware keeps its menu pictures
-summary: An old camera's firmware can load a file called NANDDAT.BIN that the manufacturer's update package does not contain. It is an image of reserved sectors in the internal memory, where the camera keeps the pictures of its scene menus. Two functions of 40 and 192 bytes showed it.
+summary: An old digital camera's firmware can load a file called NANDDAT.BIN that the manufacturer's update package does not contain. It is an image of reserved sectors in the internal memory, where the camera keeps the pictures of its scene menus. Two functions of 40 and 192 bytes showed it.
 date: 2026-10-12
 project: camera-firmware
 ---
