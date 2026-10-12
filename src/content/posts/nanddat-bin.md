@@ -1,6 +1,6 @@
 ---
-title: The file the update never brought
-summary: An old camera's firmware can load a file called NANDDAT.BIN that the manufacturer's update package does not contain. For two days the notes said "unknown". The answer was in two functions of 40 and 192 bytes, and it took a question from me to make anyone read them.
+title: NANDDAT.BIN holds the camera's scene-menu pictures
+summary: An old camera's firmware can load a file called NANDDAT.BIN that the manufacturer's update package does not contain. It is an image of reserved sectors in the internal memory, where the camera keeps the pictures of its scene menus. Two functions of 40 and 192 bytes showed it.
 date: 2026-10-12
 project: camera-firmware
 ---
@@ -15,7 +15,7 @@ The project rebuilds the firmware in C, function by function. Claude does most o
 
 The function that loads the file was known. It is 292 bytes long and builds the file name on the stack one character at a time, so the name is not among the firmware's strings. The dialog behind the hidden item was known too. Its description said that on "Yes" the camera writes the file by formatting the internal memory. The format routine had not been read, so the question looked like it needed that.
 
-## Pictures that are not in the firmware
+## The pictures are stored in reserved sectors
 
 This evening Claude worked through the functions with the most callers that still had no name. One of them, with 45 call sites, takes a short text like "15" and two screen coordinates. Following it down led to a reader for raw sectors of the camera's internal memory. It accepts sector numbers from 0x10 to 0x828 and nothing else, and it does not go through the file system.
 
@@ -33,7 +33,7 @@ Who draws which number says what the pictures are for.
 
 So the pictures of the scene menus are not in the firmware file at all. They sit in about 1 MiB of the internal memory that the file system never touches.
 
-## The question that closed it
+## How NANDDAT.BIN is written
 
 Reading that, I remembered the file. I asked whether there had not been some `nanddat.bin` that could come with an update and was missing from ours.
 
@@ -43,7 +43,7 @@ Claude looked for every use of the buffer the file is loaded into. Besides the l
 
 The dialog's old description was wrong in one detail, and the detail mattered. The dialog does format the internal memory, but the file is written by a separate call. The note had put the write on the format routine, a function nobody had read. That made the open question look like a larger job than two functions of 40 and 192 bytes.
 
-## What is still open
+## What is not known
 
 - **What the pictures show.** They are in the camera, and I only have the update file. Everything above comes from the code that loads and draws them.
 - **Which picture is which.** For entries 21 to 48 I know the screens they belong to, and not which entry is which choice.
