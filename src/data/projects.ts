@@ -29,6 +29,13 @@ export const PROJECTS = [
     status: 'running',
   },
   {
+    id: 'camera-firmware',
+    name: 'camera firmware',
+    description:
+      "An old compact camera's firmware, rebuilt in C function by function and checked against the original in an emulator. The repository is private, because it contains the manufacturer's update file.",
+    status: 'building',
+  },
+  {
     id: 'homepage',
     name: 'homepage',
     description: 'This site. Markdown posts, built with Astro, served as static files from a container.',
