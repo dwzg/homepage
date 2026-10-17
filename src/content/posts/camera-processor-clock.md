@@ -1,6 +1,6 @@
 ---
 title: How fast an old digital camera's processor and memories are
-summary: Nothing documents the chip in the camera I am taking apart. Four small programs under the original firmware measured it against the calendar of the camera's second controller. The processor runs at about 72 MHz, code is fastest straight from the flash through an 8 KB cache, and every jump into the main RAM costs about 14 cycles.
+summary: No datasheet documents the chip in the camera I am taking apart. Four small programs under the original firmware measured it against the calendar of the camera's second controller. The processor runs at about 72 MHz, code is fastest straight from the flash through an 8 KB cache, and every jump into the main RAM costs about 14 cycles.
 date: 2026-10-17
 project: camera-firmware
 ---
@@ -44,6 +44,8 @@ The tick is a millisecond. The firmware's 9001 gives 999.975 ticks a second, wit
 The eight extra `nop`s cost exactly 10,000 counts over 10,000 turns, one counter step per eight instructions. If a `nop` takes one cycle, the processor runs at eight times the counter's rate: 71.94 MHz. The plain loop then takes 6 cycles a turn in the fast memory, not the textbook 4. Dividing it by 4 would have put the processor at about 48 MHz.
 
 72 MHz is eight times 9 MHz, and both timers run at about 9 MHz. The counter looks like the processor's clock divided by eight. The tick timer is close but not identical: with 9001 counts per tick and 999.975 ticks a second its clock comes out at about 9.0008 MHz, against the counter's 8.9926 MHz. I do not know why the two differ by about 0.09 %.
+
+After these measurements I got hold of Nikon's repair manual for the camera. It names no part number for the chip either, but its block diagram of the chip (page E10) has a clock generator, and that generator puts out two clocks: 36 MHz and 72 MHz. The diagram does not say which of them the processor gets. Still, 72 MHz is one of only two clocks it shows, and the measurement landed on it.
 
 ## Three memories
 
@@ -117,7 +119,7 @@ None of the parts has a name I can look up, so this section is inference from th
 
 ## What is not known
 
-- **The one-cycle `nop`.** 71.94 MHz is a lower bound. It is the clock only if a `nop` in the fast memory takes exactly one cycle, which is the normal case for an ARM7 but has not been shown here.
+- **The one-cycle `nop`.** 71.94 MHz is the clock only if a `nop` in the fast memory takes exactly one cycle. The repair manual's 72 MHz makes that very likely, but its diagram does not say which clock drives the processor.
 - **The calendar's own accuracy.** It was not checked against anything else.
 - **The 0.09 % between the two timers.** Not explained.
 - **The cache's ways.** About 8 KB and 16-byte lines are measured; how many ways it has is not.
