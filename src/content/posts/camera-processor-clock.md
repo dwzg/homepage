@@ -53,7 +53,7 @@ The plain loop then takes 6 cycles a turn in that memory, not the textbook 4. Th
 
 ## Main memory pays for every branch
 
-The same pair of loops from the main RAM shows how that memory behaves. At 72 MHz the plain loop takes 18.4 cycles a turn, three times as long as in the fast memory. The eight `nop`s add only about 8 cycles. Fetching instructions one after the other is nearly as cheap as in the fast memory. Every jump into RAM costs about 14 cycles more. An earlier test had already found that reading RAM in bytes, halfwords or words takes the same time per access. For the NuttX port this means the code that has to be fast belongs in the 512 bytes at `0x08100000`: the interrupt entry, the flash programmer.
+The same pair of loops from the main RAM shows how that memory behaves. At 72 MHz the plain loop takes 18.4 cycles a turn, three times as long as in the fast memory. The eight `nop`s add only about 8 cycles. Fetching instructions one after the other is nearly as cheap as in the fast memory. Every jump into RAM costs about 14 cycles more. An earlier test had already found that reading RAM in bytes, halfwords or words takes the same time per access. For the NuttX port this means code should not run from the main RAM.
 
 ## What is not known
 
