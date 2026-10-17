@@ -51,17 +51,17 @@ The three directories are a count, a zero word, and then pairs of a size and a s
 
 | Directory | Entries | What they are |
 | :---: | :---: | --- |
-| 0x10 | 43 | JPEG pictures, 40 of them with a 320 x 240 header (the other three use a header the count did not look for) |
+| 0x10 | 43 | 40 JPEG pictures of 320 x 240, and three empty slots |
 | 0x11 | 48 | pictures in the 4-bit format described above |
 | 0x12 | 15 | JPEG pictures of 320 x 240 |
 
 The second directory is the one the drawing function with the 45 call sites loads, and it matches the code to the byte. For every one of its 48 entries the size is 2 plus the height times half the width, rounded up: 20 pictures of 192 x 81 pixels, 25 of 168 x 162, and three of 108 pixels high. The firmware's table has 50 slots, the camera 48 pictures. Entries 49 and 50 had no call site with a fixed number, so this fits, but why the table is longer is not known.
 
-The JPEG pictures show what the screens around them suggested: 23 maps of the world with a time zone marked, for the date setting; the start-up screens, including the animation that spells COOLPIX; the star-field backgrounds of the menus; the framing guides of the scene assist screens; the 3 x 3 grid; and one ordinary photograph, most likely one that was chosen as the welcome picture at some point. None of them is shown here. The 48 small pictures have not been drawn yet, because their colours come from tables the callers pass.
+The JPEG pictures show what the screens around them suggested: 23 maps of the world with a time zone marked, for the date setting; the welcome screen; the 15 frames of the start-up animation that spells COOLPIX; the star-field backgrounds of the menus; the framing guides of the scene assist screens; the 3 x 3 grid; and one photograph of a person, by its look a sample picture for the welcome screen. The 48 small pictures are the symbols of the scene menu and its assist screens, the image sizes, and three kinds of battery. Their colours come from tables the callers pass, which have not been read, so so far they exist only in grey. None of the pictures is shown here.
 
 ## What is not known
 
-- **What the 48 small pictures show.** Their bytes are known since the dump; drawing them needs the colour tables of their callers.
+- **The small pictures' colours.** They come from 16-entry tables that each caller passes; none has been read yet.
 - **Which picture is which.** For entries 21 to 48 I know the screens they belong to, and not which entry is which choice.
 - **The other two directories.** Nothing beyond their loader has been read.
 - **Who makes the hidden item appear.** It shows when one byte in memory is not 0. What sets that byte is not known.
