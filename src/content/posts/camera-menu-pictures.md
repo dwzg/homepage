@@ -43,13 +43,29 @@ Claude looked for every use of the buffer the file is loaded into. Besides the l
 
 The dialog's old description was wrong in one detail, and the detail mattered. The dialog does format the internal memory, but the file is written by a separate call. The note had put the write on the format routine, a function nobody had read. That made the open question look like a larger job than two functions of 40 and 192 bytes.
 
+## Update, 17 October: the pictures from the camera
+
+Two days after this post the camera itself answered part of it. A small read-only routine, added to the firmware and installed through the camera's normal update, copied the camera's NOR flash and the internal memory's sectors 0x10 to 0x828 to the memory card. I ran it twice and got the same 1,061,376 bytes both times. Claude decoded the copy against what the code had said.
+
+The three directories are a count, a zero word, and then pairs of a size and a sector, as the reader had suggested.
+
+| Directory | Entries | What they are |
+| :---: | :---: | --- |
+| 0x10 | 43 | JPEG pictures, 40 of them with a 320 x 240 header (the other three use a header the count did not look for) |
+| 0x11 | 48 | pictures in the 4-bit format described above |
+| 0x12 | 15 | JPEG pictures of 320 x 240 |
+
+The second directory is the one the drawing function with the 45 call sites loads, and it matches the code to the byte. For every one of its 48 entries the size is 2 plus the height times half the width, rounded up: 20 pictures of 192 x 81 pixels, 25 of 168 x 162, and three of 108 pixels high. The firmware's table has 50 slots, the camera 48 pictures. Entries 49 and 50 had no call site with a fixed number, so this fits, but why the table is longer is not known.
+
+The JPEG pictures show what the screens around them suggested: 23 maps of the world with a time zone marked, for the date setting; the start-up screens, including the animation that spells COOLPIX; the star-field backgrounds of the menus; the framing guides of the scene assist screens; the 3 x 3 grid; and one ordinary photograph, most likely one that was chosen as the welcome picture at some point. None of them is shown here. The 48 small pictures have not been drawn yet, because their colours come from tables the callers pass.
+
 ## What is not known
 
-- **What the pictures show.** They are in the camera, and I only have the update file. Everything above comes from the code that loads and draws them.
+- **What the 48 small pictures show.** Their bytes are known since the dump; drawing them needs the colour tables of their callers.
 - **Which picture is which.** For entries 21 to 48 I know the screens they belong to, and not which entry is which choice.
 - **The other two directories.** Nothing beyond their loader has been read.
 - **Who makes the hidden item appear.** It shows when one byte in memory is not 0. What sets that byte is not known.
-- **None of this has run on a camera.** It is read from the firmware and checked in an emulator.
+- **`NANDDAT.BIN` has not been written to a camera.** The area was read on the camera; the install path is read from the firmware and checked in an emulator only.
 
 ## What I would tell someone starting the same thing
 
