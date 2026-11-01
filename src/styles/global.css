@@ -210,6 +210,26 @@ pre,
   color: var(--muted);
 }
 
+/* Pictures: <figure> with an <img> and a short <figcaption>, written as HTML
+   in the Markdown so the caption can sit under the picture. */
+.prose figure {
+  margin-inline: 0;
+}
+
+.prose figure img {
+  display: block;
+  width: 100%;
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.prose figcaption {
+  margin-top: 0.5em;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 .prose :not(pre) > code {
   font-size: 0.86em;
   padding: 0.1em 0.35em;

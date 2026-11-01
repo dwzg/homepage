@@ -7,6 +7,12 @@ project: camera-firmware
 
 The Nikon COOLPIX 3200 is a compact digital camera (its firmware calls it E3200). Inside is an ARM7-class processor with no caches and 16 MiB of RAM. It runs Nikon's firmware on a small real-time kernel, with the work split into tasks. It now also runs DOOM, played with the camera's buttons, with sound effects and music, at about four to five frames a second.
 
+<figure>
+  <img src="/images/doom-on-a-nikon-camera/on-the-camera.jpg" width="1400" height="939"
+    alt="The back of the camera, its screen showing DOOM: a monster in a corridor, the status bar at the bottom and two lines of white numbers at the top.">
+  <figcaption>DOOM on the camera's screen, with the loops in fast memory. In the status line at the top, <code>R212</code> and <code>B80</code> are the milliseconds spent drawing and copying to the display.</figcaption>
+</figure>
+
 ## What was already there
 
 I am reverse engineering the camera's firmware. Many of its functions have names and descriptions, and an emulator runs the original firmware against models of the camera's hardware. That gave DOOM two things it needed.
@@ -21,6 +27,12 @@ The DOOM image changes 4 bytes of Nikon's file and adds 524. The added code read
 ## The first build on the camera
 
 In the emulator, DOOM played its demo and, with the camera's keys, a new game of the first level, E1M1. On the camera, the first build squeezed the picture into the top half with noise below, left a black band on the right and showed red as blue. It drew about one frame a second, ignored the keys and made no sound.
+
+<figure>
+  <img src="/images/doom-on-a-nikon-camera/emulator-e1m1.png" width="1312" height="960" loading="lazy" decoding="async"
+    alt="A screenshot of DOOM's first level from the emulator: a pillar, dark floor and walls, the pistol and the status bar.">
+  <figcaption>The first level, E1M1, in the emulator, in a new game started with the camera's keys.</figcaption>
+</figure>
 
 The emulator's model of the display had been a guess, and a photo of the screen corrected three parts of it. In playback, the display reads 480 lines from one buffer and shows every second line. The model had expected two interleaved half-pictures. The panel shows all 768 columns, not 656. And the camera takes a pixel pair as Y0 Cr Y1 Cb, with the two colour components the other way round. The second build filled the screen with the right colours.
 
@@ -56,6 +68,12 @@ After a few smaller changes, the last profile shows DOOM's own game and render l
 ## A controller that does not answer
 
 After some minutes of the demo, the picture froze. The next build added a hang report: when no frame has come for two seconds, the sound interrupt shows the addresses it interrupted. The addresses pointed into the firmware's routine that waits for the second controller's reply. It waits by polling a semaphore, with no limit.
+
+<figure>
+  <img src="/images/doom-on-a-nikon-camera/hang-report.jpg" width="1400" height="1046" loading="lazy" decoding="async"
+    alt="The camera's screen showing DOOM stopped, with a line of hexadecimal addresses at the top.">
+  <figcaption>A hang report. <code>E0</code> marks a hang, and the three numbers are addresses the sound interrupt found DOOM at. The tiny font draws a B almost like an 8: the second and third read <code>00015B00</code>.</figcaption>
+</figure>
 
 A later report recorded the state at the stall. The request had gone out, and not one byte of an answer had come back. The controller did not answer, about once in some thousand requests. Why is not known, because its own firmware has not been read. Nikon's firmware has no limit either. It keeps a timeout counter that is written and never read. It just asks far less often than a game polling for keys every 20 ms.
 
