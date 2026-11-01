@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Personal blog ("dennis/log"): Markdown posts about the author's projects, built with Astro into static HTML and served from a busybox httpd container. Deployed to Portainer on every push to `main`, the same way as `dwzg/weatherpage`.
+Personal blog ("dennis/log"): Markdown posts about the author's projects, built with Astro into static HTML and served from a static-web-server container. Deployed to Portainer on every push to `main`, the same way as `dwzg/weatherpage`.
 
 ## Layout
 
@@ -13,7 +13,6 @@ Personal blog ("dennis/log"): Markdown posts about the author's projects, built 
 | `src/layouts/Base.astro` | Head, header, footer, font imports. |
 | `src/pages/` | Home, posts, projects, about, RSS, robots, 404. |
 | `src/styles/global.css` | Tokens (light + dark via `prefers-color-scheme`) and the `.prose` styles for post bodies. |
-| `httpd.conf` | busybox httpd: the 404 page and MIME types it does not know (woff2, svg, xml). |
 
 ## Commands
 
@@ -47,4 +46,5 @@ Check UI changes in a browser at desktop and phone widths, in both colour scheme
 - `deploy.yml`: on push to `main`, build with buildx, tag `latest` + commit SHA, push to GHCR, call `PORTAINER_WEBHOOK_URL`. The untagged-image cleanup runs **before** the push, and `provenance: false` / `sbom: false` keep the tag a plain manifest. Both lessons came from weatherpage, where getting either wrong left a tag every pull failed on.
 - `ci.yml`: on pull requests, `npm run build` plus a Docker build and a smoke test of the container.
 - Secrets: `PORTAINER_WEBHOOK_URL`, `DELETE_PACKAGES_TOKEN`; `GITHUB_TOKEN` is automatic.
-- Dependencies are pinned to exact versions. The base images are `node:22-alpine` (build) and `lipanski/docker-static-website:2.6.0` (serve).
+- Dependencies are pinned to exact versions. The base images are `node:22-alpine` (build) and `joseluisq/static-web-server:2.44.1` (serve).
+- The server is configured by `ENV` in the `Dockerfile`: port 3000 (the Portainer stack maps it), the 404 page, and no `Cache-Control` headers (its defaults would cache pages for a day and images, whose names never change, for a year). It replaced busybox httpd because busybox ignores range requests, and Safari will not play video without them. The CI smoke test checks that a video answers a range request with `206`.
