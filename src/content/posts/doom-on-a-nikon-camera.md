@@ -5,24 +5,24 @@ date: 2026-11-01
 project: camera-firmware
 ---
 
-The camera I am taking apart is a Nikon COOLPIX 3200 (its firmware calls it E3200). Its processor is an ARM7-class core with no caches, and it has 16 MiB of RAM. On the 15th of October I took a detour from the reconstruction and asked Claude to "make DOOM run on the camera, loaded from SD card into RAM with a slightly modified original firmware image, like we did with the dumper." By the early hours of the next morning it ran on the camera with keys, sound effects and music, at about four to five frames a second. Claude wrote the port. I put each build on the card and photographed the screen.
+The Nikon COOLPIX 3200 is a compact digital camera (its firmware calls it E3200). Inside is an ARM7-class processor with no caches and 16 MiB of RAM. It runs Nikon's firmware on a small real-time kernel, with the work split into tasks. On the 15th of October I asked Claude, the AI model I work with, to port DOOM to it. By the early hours of the next morning DOOM ran on the camera, with its buttons, sound effects and music, at about four to five frames a second. Claude wrote the port. I put each build on the memory card and photographed the screen.
 
-## What existed
+## What was already there
 
-The project rebuilds the camera's firmware in C, function by function, and checks every function against the original in an emulator. Two things from that work made DOOM possible in a day.
+I am reverse engineering the camera's firmware. Many of its functions have names and descriptions, and an emulator runs the original firmware against models of the camera's hardware. That gave DOOM two things it needed.
 
-- **A way onto the camera.** A day earlier, a modified firmware image had copied the camera's flash memory to the card. It is Nikon's own v1.2 update file with one branch changed. The item "Auto transfer" in the playback menu then jumps to our code in the free flash behind the image. The camera installs it like any firmware update.
-- **Names.** The reconstruction had already read the firmware's file calls and its display set-up. It had also read the events of the second controller, a small chip that handles the keys, the power switch and the calendar clock. DOOM could use the firmware as a library instead of driving the hardware itself.
+- **A way onto the camera.** The camera installs firmware updates from the memory card. A modified update file is Nikon's own v1.2 file with one branch changed. The item "Auto transfer" in the playback menu then jumps to new code in unused flash behind the image. The same route had copied the camera's flash memory to the card the day before, so it was known to work.
+- **The firmware as a library.** Its functions for files and the display were known. So were the events of the second controller, a small chip that handles the keys, the power switch and the calendar clock. DOOM could call the firmware instead of driving the hardware itself.
 
-The DOOM image changes 4 bytes of Nikon's file and adds 524. The added code reads `DOOM.BIN` and `DOOM.WAD` from the card's root into RAM, the way the firmware reads its own sub-firmware file. Then it calls DOOM in the firmware's main task. DOOM never returns: to leave it, you switch the camera off. Without the two files, Auto transfer opens as it always did.
+The DOOM image changes 4 bytes of Nikon's file and adds 524. The added code reads two files from the card into RAM: `DOOM.BIN`, the game, and `DOOM.WAD`, its levels, pictures and sounds. It reads them the way the firmware reads the update file for the second controller. Then it calls DOOM from the firmware's main task. DOOM never returns: to leave it, you switch the camera off. Without the two files, Auto transfer opens as it always did.
 
-`DOOM.BIN` is doomgeneric with one change (a screen buffer at one byte a pixel), a small C library and a layer for the camera. The WAD is the shareware episode, 4,196,020 bytes. Both go into RAM the firmware uses for playback pictures and capture buffers, which sit idle while DOOM holds the main task. That nothing else needs this RAM while DOOM runs is not confirmed.
+`DOOM.BIN` is doomgeneric, a version of DOOM's source code made for porting, with one change (a screen buffer at one byte a pixel). Around it are a small C library and a layer for the camera. The WAD is the shareware episode, 4,196,020 bytes. Both go into RAM the firmware uses for playback pictures and capture buffers, which sit idle while DOOM holds the main task. That nothing else needs this RAM while DOOM runs is not confirmed.
 
 ## The first build on the camera
 
-In the emulator, DOOM played its demo and, with the camera's keys, a new game of E1M1. On the camera, the first build squeezed the picture into the top half with noise below, left a black band on the right and showed red as blue. It drew about one frame a second, ignored the keys and made no sound.
+In the emulator, DOOM played its demo and, with the camera's keys, a new game of the first level, E1M1. On the camera, the first build squeezed the picture into the top half with noise below, left a black band on the right and showed red as blue. It drew about one frame a second, ignored the keys and made no sound.
 
-The emulator's display model had been an assumption, and the photo corrected three parts of it. In playback, the display reads 480 lines from the first field and shows every second one. The panel shows all 768 columns, not 656. And the camera takes a pixel pair as Y0 Cr Y1 Cb, with the two colour components the other way round. The second build filled the screen with the right colours.
+The emulator's model of the display had been a guess, and the photo corrected three parts of it. In playback, the display reads 480 lines from one buffer and shows every second line. The model had expected two interleaved half-pictures. The panel shows all 768 columns, not 656. And the camera takes a pixel pair as Y0 Cr Y1 Cb, with the two colour components the other way round. The second build filled the screen with the right colours.
 
 A photo of the game says nothing about keys or sound. So the third build wrote a status line into DOOM's message line. It showed how keys were polled, how many key events and sound interrupts had come, and the milliseconds spent drawing and copying to the display. The photo read `P0 E0` and `S18801 R330 B409`. No key events had come through the firmware's key task, and 18,801 sound interrupts had fed a speaker that was switched off.
 
@@ -32,7 +32,7 @@ Both had a cause in the firmware. Its sound player sends three bytes over a seri
 
 The processor has no caches, and DOOM runs from RAM, so its speed is the speed of that RAM. A test program measured what the camera offers. It has 512 bytes of fast memory at `0x08100000`, where code runs 3.5 times as fast as from the main RAM. Thumb code was no faster than ARM code, and a RAM access costs the same whatever its width.
 
-Claude moved the inner loops that draw low-detail columns and spans into those 512 bytes, together with the copy to the display. A profiler in the sound interrupt then recorded 48 seconds of the demo on the camera:
+DOOM was running in its low-detail mode, which draws every pixel two wide. Claude moved that mode's inner loops for walls and floors into those 512 bytes, together with the copy to the display. A profiler in the sound interrupt then recorded 48 seconds of the demo on the camera:
 
 | Where the time went | Share |
 | --- | ---: |
@@ -42,7 +42,7 @@ Claude moved the inner loops that draw low-detail columns and spans into those 5
 | `V_DrawPatch` | 7.7 % |
 | the monsters' sight checks | 6.8 % |
 
-memcpy went into the fast memory next and changed nothing. The copies wait for the RAM, not for instructions. What helped was fewer RAM accesses. The column and span loops now store a low-detail pixel's two bytes with one halfword store. And the display's scaler stretches the picture in hardware, so DOOM writes 200 lines of 320 pixels instead of filling the whole field.
+memcpy went into the fast memory next and changed nothing. The copies wait for the RAM, not for instructions. What helped was fewer RAM accesses. The wall and floor loops now store a double-width pixel's two bytes with one halfword store. And the display hardware can stretch a picture, so DOOM writes 200 lines of 320 pixels and lets it scale them to the panel.
 
 | Build | Drawing (ms) | Copy (ms) | Frames a second |
 | --- | ---: | ---: | ---: |
@@ -65,9 +65,9 @@ The same night, the camera switched itself off in the middle of the demo. The se
 
 ## Music
 
-DOOM's music is MUS scores written for an OPL2 FM chip, and emulating that next to the game is too much for this processor. Instead, a six-voice synthesizer in the sound interrupt plays the scores. It uses band-limited square-like wavetables, an 8 ms attack, and drums made of a falling tone and noise. The melodies are right and the timbre is not.
+DOOM's music is stored as MUS scores, written for the OPL2 FM synthesizer chip of PC sound cards. Emulating that chip next to the game is too much for this processor. Instead, a six-voice synthesizer in the sound interrupt plays the scores. It uses band-limited square-like wavetables, an 8 ms attack, and drums made of a falling tone and noise. The melodies are right and the timbre is not.
 
-A render of E1M1 opens in E, each note within a fraction of a semitone. Other songs needed DOOM's instrument table: its GENMIDI lump shifts some instruments by octaves, and without it E1M5 to E1M9 played an octave too high. Moving every note below C3 an octave up, for the small speaker, was tried and taken out again: E1M1 sounded weird with it. What the music costs in frame rate on the camera has not been measured.
+A render of E1M1 opens in E, each note within a fraction of a semitone. Other songs needed the instrument table in the WAD (the GENMIDI lump). It shifts some instruments by octaves, and without it the music of E1M5 to E1M9 played an octave too high. Moving every note below C3 an octave up, for the small speaker, was tried and taken out again: E1M1 sounded weird with it. What the music costs in frame rate on the camera has not been measured.
 
 ## What is not known
 
