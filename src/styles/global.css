@@ -216,8 +216,10 @@ pre,
   margin-inline: 0;
 }
 
-.prose figure img {
+.prose figure img,
+.prose figure video {
   display: block;
+  height: auto;
   width: 100%;
   border-radius: 4px;
   background: var(--surface);

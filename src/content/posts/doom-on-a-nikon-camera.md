@@ -5,7 +5,7 @@ date: 2026-11-01
 project: camera-firmware
 ---
 
-The Nikon COOLPIX 3200 is a compact digital camera (its firmware calls it E3200). Inside is an ARM7-class processor with no caches and 16 MiB of RAM. It runs Nikon's firmware on a small real-time kernel, with the work split into tasks. It now also runs DOOM, played with the camera's buttons, with sound effects and music, at about four to five frames a second.
+The Nikon COOLPIX 3200 is a compact digital camera (its firmware calls it E3200). Inside is an ARM7-class processor with no caches and 16 MiB of RAM. It runs Nikon's firmware on a small real-time kernel, with the work split into tasks. It now also runs DOOM, played with the camera's buttons, with sound effects and music, at about five and a half frames a second.
 
 <figure>
   <img src="/images/doom-on-a-nikon-camera/on-the-camera.jpg" width="1400" height="939"
@@ -21,6 +21,16 @@ I am reverse engineering the camera's firmware. Many of its functions have names
 - **The firmware as a library.** Its functions for files and the display were known. So were the events of the second controller, a small chip that handles the keys, the power switch and the calendar clock. DOOM could call the firmware instead of driving the hardware itself.
 
 The DOOM image changes 4 bytes of Nikon's file and adds 524. The added code reads two files from the card into RAM: `DOOM.BIN`, the game, and `DOOM.WAD`, its levels, pictures and sounds. It reads them the way the firmware reads the update file for the second controller. Then it calls DOOM from the firmware's main task. DOOM never returns: to leave it, you switch the camera off. Without the two files, Auto transfer opens as it always did.
+
+A later version of the same image keeps even less in the flash. Auto transfer starts a small menu from the card, which lists DOOM next to a few diagnostic programs. That is the version in the videos below.
+
+<figure>
+  <video controls playsinline preload="none" width="640" height="480"
+    poster="/images/doom-on-a-nikon-camera/starting-doom.jpg">
+    <source src="/images/doom-on-a-nikon-camera/starting-doom.mp4" type="video/mp4">
+  </video>
+  <figcaption>Starting DOOM: the playback menu, Auto transfer, the menu of programs on the card, DOOM's title screen and a new game. Sound effects only, from the camera's speaker.</figcaption>
+</figure>
 
 `DOOM.BIN` is doomgeneric, a version of DOOM's source code made for porting, with one change (a screen buffer at one byte a pixel). Around it are a small C library and a layer for the camera. The WAD is the shareware episode, 4,196,020 bytes. Both go into RAM the firmware uses for playback pictures and capture buffers, which sit idle while DOOM holds the main task. That nothing else needs this RAM while DOOM runs is not confirmed.
 
@@ -62,8 +72,11 @@ memcpy went into the fast memory next and changed nothing. The copies wait for t
 | speaker on, own key polling, cheaper copy | 255 | 157 | 2.4 |
 | loops in fast memory | 180-243 | 80-90 | 3.4 |
 | halfword stores, hardware stretch | 144-189 | 52-53 | 4-5 |
+| as kept, debug lines off (videos) | | | 5.3-5.7 |
 
-After a few smaller changes, the last profile shows DOOM's own game and render logic and no item above 6 %.
+The first four rows come from the status line, which shows one frame at a time. The last row is counted in two videos of the build as kept, with a few more small speed-ups and the debug lines switched off. In a 30 fps video the copy sweeps down the screen in about two video frames, and each part of the screen changes once per game frame, so the changes can be counted. Over about half a minute of play each, the videos average 5.7 frames a second without music and 5.3 with it. Most frames are 133 to 200 ms apart, the shortest 100 ms.
+
+The last profile shows DOOM's own game and render logic and no item above 6 %.
 
 ## A controller that does not answer
 
@@ -85,7 +98,15 @@ The camera also switched itself off in the middle of the demo. The second contro
 
 DOOM's music is stored as MUS scores, written for the OPL2 FM synthesizer chip of PC sound cards. Emulating that chip next to the game is too much for this processor. Instead, a six-voice synthesizer in the sound interrupt plays the scores. It uses band-limited square-like wavetables, an 8 ms attack, and drums made of a falling tone and noise. The melodies are right and the timbre is not.
 
-A render of E1M1 opens in E, each note within a fraction of a semitone. Other songs needed the instrument table in the WAD (the GENMIDI lump). It shifts some instruments by octaves, and without it the music of E1M5 to E1M9 played an octave too high. Moving every note below C3 an octave up, for the small speaker, was tried and taken out again: E1M1 sounded weird with it. What the music costs in frame rate on the camera has not been measured.
+A render of E1M1 opens in E, each note within a fraction of a semitone. Other songs needed the instrument table in the WAD (the GENMIDI lump). It shifts some instruments by octaves, and without it the music of E1M5 to E1M9 played an octave too high. Moving every note below C3 an octave up, for the small speaker, was tried and taken out again: E1M1 sounded weird with it. With music, the videos average 5.3 frames a second against 5.7 without. They show different scenes, though, so the music's own cost cannot be told apart from theirs.
+
+<figure>
+  <video controls playsinline preload="none" width="640" height="480"
+    poster="/images/doom-on-a-nikon-camera/playing-with-music.jpg">
+    <source src="/images/doom-on-a-nikon-camera/playing-with-music.mp4" type="video/mp4">
+  </video>
+  <figcaption>E1M1 with its music, up to the first fight, from the camera's speaker.</figcaption>
+</figure>
 
 ## What is not known
 
