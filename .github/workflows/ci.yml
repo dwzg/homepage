@@ -45,3 +45,8 @@ jobs:
           curl -fs http://localhost:3000/ | grep -q 'dennis'
           curl -fs http://localhost:3000/rss.xml | grep -q '<rss'
           test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/does-not-exist)" = 404
+          # Safari plays video only from a server that answers range requests.
+          video=$(find public -name '*.mp4' | head -1 | sed 's|^public||')
+          if [ -n "$video" ]; then
+            test "$(curl -s -r 0-99 -o /dev/null -w '%{http_code} %{size_download} %{content_type}' "http://localhost:3000$video")" = "206 100 video/mp4"
+          fi
