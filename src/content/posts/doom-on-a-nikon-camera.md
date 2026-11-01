@@ -76,10 +76,3 @@ A render of E1M1 opens in E, each note within a fraction of a semitone. Other so
 - That nothing else in the firmware needs the RAM DOOM uses.
 
 Nothing is saved either: no saved games and no settings.
-
-## What I would tell someone trying the same
-
-- When the screen is the only output, put the numbers on it. One status line in a photo told three faults apart that looked the same from outside.
-- Treat the emulator's device models as guesses until the hardware has answered. The emulator played DOOM fine with three facts about the display wrong.
-- Measure before you move code. memcpy in fast memory looked like a sure win and changed nothing.
-- Expect to find the original firmware's rare faults. A program that asks the hardware more often than the vendor did will meet them sooner, and may have to add the timeout the vendor left out.
